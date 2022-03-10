@@ -4,7 +4,7 @@ import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 import Notification from "./components/UI/Notification"
 import { useSelector, useDispatch } from 'react-redux';
-import { SendPutReq } from "./store/cartItem-actions"
+import { SendPutReq, FetchData } from "./store/cartItem-actions"
 let initial = true;
 function App() {
   const dispatch = useDispatch();
@@ -12,13 +12,18 @@ function App() {
   const cart = useSelector(state => state.cartItem);
   const notification = useSelector(state => state.uiCart.notification);
 
+
+  useEffect(() => {
+    dispatch(FetchData());
+  }, [])
   useEffect(() => {
 
     if (initial) {
       initial = false;
       return;
     }
-    dispatch(SendPutReq(cart));
+
+    if (cart.changed) dispatch(SendPutReq({ item: cart.item, totalQuantity: cart.totalQuantity }));
   }, [cart])
   return (
     <>
